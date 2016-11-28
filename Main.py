@@ -13,8 +13,8 @@ import pdb
 from EvalMeasure import *
 from Index import Index
 from QueryParser import QueryParser
-from Weighter import  *
 from models.IRmodel import  *
+from models.Weighter import  *
 
 index = Index("text")
 index.indexation('cacm/cacm.txt', './test/')

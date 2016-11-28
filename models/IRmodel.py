@@ -16,6 +16,7 @@ class IRmodelVector(IRmodel):
         return
 
     def getScores(self, query, normalized) :
+        query = self.weighter.getWeightsForQuery()
         scores = dict()
         sum_y = 0.
         for each_stem in query.keys():
