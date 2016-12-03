@@ -39,13 +39,12 @@ class PresitionRappel(EvalMeasure):
         scores = self.eval(l)
         score = 0.
         count = 0
-
         for (key, value) in scores.iteritems():
             score += value
             count += 1
         if count == 0:
             return 0.
-        return score * 1. / count
+        return score / count * 1.
 
 
 class EvalIRModel:

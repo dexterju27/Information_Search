@@ -17,6 +17,8 @@ from models.IRmodel import  *
 from models.Weighter import  *
 from models.LanguageModel import *
 from models.Okapi import  *
+import numpy as np
+from evaluation.GridSearch import *
 
 index = Index("text")
 index.indexation('cacm/cacm.txt', './test/')
@@ -73,5 +75,15 @@ def test5(irlists, index):
     scores_mean, scores_std = eval.evalModels()
     return scores_mean, scores_std
 
-scores_mean, scores_std = test5(irlists, index)
+def test6(irlists, index):
+    weighter1 = WeighterVector1(index)
+    models = []
+    lams = np.linspace(0, 1, 10)
+    for lam in lams:
+        models.append(LanguageModel(weighter1, lam))
+    search = GridSearch(models, irlists, 10)
+    search.optimisation()
+    return
+
+test6(irlists, index)
 pdb.set_trace()
