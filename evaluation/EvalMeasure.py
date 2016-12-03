@@ -44,8 +44,8 @@ class PresitionRappel(EvalMeasure):
             score += value
             count += 1
         if count == 0:
-            return 0
-        return score / count * 1.
+            return 0.
+        return score * 1. / count
 
 
 class EvalIRModel:
@@ -58,11 +58,13 @@ class EvalIRModel:
         scores_mean = []
         socres_std  = []
         for model in self.models:
+            print ("evaluation of the first model")
             score = []
             for l in self.irLists:
                 l.list = model.getRanking(l.query.text)
                 rater = PresitionRappel(self.nbLevels)
                 score.append(rater.ap(l))
+                print ("evaluation of querry is %f", score[-1])
             scores_mean.append(np.mean(score))
             socres_std.append(np.std(score))
         return scores_mean, socres_std
