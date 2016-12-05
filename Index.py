@@ -22,6 +22,8 @@ class Index (object):
         self.docFrom = dict()
         self.input = ''
         self.output = ''
+        self.successors = {}
+        self.presuccessors = {}
 
     def indexation(self, input, output):
         self.input = input
@@ -77,12 +79,26 @@ class Index (object):
             statistic = self.PorterStemmer.getTextRepresentation(doc.getText())
             id = doc.getId()
             id = int(id)
-            doc = self.parser.nextDocument()
             for eachStem in statistic.keys():
                 inv = str(id) + ':' + str(statistic[eachStem]) + ','
                 fIndexInv.seek(tempPosition[eachStem].position)
                 fIndexInv.write(inv)
                 tempPosition[eachStem].position += len(inv)
+            # generate successors and presuccessors
+            id = doc.getId()
+            id = int(id)
+            self.successors[id] = set()
+            if id not in self.presuccessors:
+                self.presuccessors[id] = set()
+            if doc.get('links') != '':
+                for eachDoc in doc.get('links').split(";"):
+                    if eachDoc != '':
+                        id_eachDoc = int(eachDoc)
+                        self.successuers[id].add(id_eachDoc)
+                        if not self.predecesseurs.has_key(id_eachDoc):
+                            self.predecesseurs[id_eachDoc] = set()
+                        self.predecesseurs[id_eachDoc].add(id)
+            doc = self.parser.nextDocument()
         fIndexInv.close()
         # pdb.set_trace()
 
@@ -130,7 +146,11 @@ class Index (object):
         else:
             return None
 
+    def getSuccessors(self):
+        return self.successors
 
+    def getPresuccessors(self):
+        return self.presuccessors
 
 
 

@@ -78,12 +78,13 @@ def test5(irlists, index):
 def test6(irlists, index):
     weighter1 = WeighterVector1(index)
     models = []
-    lams = np.linspace(0, 1, 10)
+    lams = np.linspace(0, 0.99, 5)
     for lam in lams:
         models.append(LanguageModel(weighter1, lam))
     search = GridSearch(models, irlists, 10)
-    search.optimisation()
+    print (search.optimisation())
     return
 
 test6(irlists, index)
+# the best parameters are 0.2475
 pdb.set_trace()

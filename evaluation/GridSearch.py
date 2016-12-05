@@ -19,5 +19,4 @@ class GridSearch(object):
         eval = EvalIRModel(self.models, self.irlists,  self.nbLevel)
         scores_mean, scores_std = eval.evalModels()
         scores_mean = np.array(scores_mean)
-        self.models[scores_mean.argmax()].getParams()
-        return
+        return self.models[scores_mean.argmax()].getParams()

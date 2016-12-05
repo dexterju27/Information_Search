@@ -16,8 +16,7 @@ class LanguageModel(IRmodel):
         return
 
     def getParams(self):
-        print ("lam is :" + self.lam)
-        return
+        return self.lam
 
     def getLength(self, doc):
         words = self.weighter.getDocWeightsForDoc(doc)
