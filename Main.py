@@ -19,6 +19,9 @@ from models.LanguageModel import *
 from models.Okapi import  *
 import numpy as np
 from evaluation.GridSearch import *
+from models.RandomModel import *
+from collection.PageRank import *
+
 
 index = Index("text")
 index.indexation('cacm/cacm.txt', './test/')
@@ -85,6 +88,17 @@ def test6(irlists, index):
     print (search.optimisation())
     return
 
-test6(irlists, index)
+
+def test7(irlists, index):
+    weighter1 = WeighterVector1(index)
+    models = []
+    page_rank = PageRank(0.1, 100, index)
+    random_model = RandomModel(IRmodelVector(weighter1), page_rank, 10, 10, )
+    models.append(IRmodelVector(weighter1))
+    models.append(random_model)
+    eval = EvalIRModel(models, irlists, 10)
+    scores_mean, scores_std = eval.evalModels()
+    return scores_mean, scores_std
+test7(irlists, index)
 # the best parameters are 0.2475
 pdb.set_trace()

@@ -22,7 +22,7 @@ class Index (object):
         self.docFrom = dict()
         self.input = ''
         self.output = ''
-        self.successors = {}
+        self.successuers = {}
         self.presuccessors = {}
 
     def indexation(self, input, output):
@@ -87,17 +87,18 @@ class Index (object):
             # generate successors and presuccessors
             id = doc.getId()
             id = int(id)
-            self.successors[id] = set()
+            self.successuers[id] = set()
             if id not in self.presuccessors:
                 self.presuccessors[id] = set()
             if doc.get('links') != '':
                 for eachDoc in doc.get('links').split(";"):
-                    if eachDoc != '':
+                    # check if the id is valid
+                    if eachDoc.isdigit():
                         id_eachDoc = int(eachDoc)
                         self.successuers[id].add(id_eachDoc)
-                        if not self.predecesseurs.has_key(id_eachDoc):
-                            self.predecesseurs[id_eachDoc] = set()
-                        self.predecesseurs[id_eachDoc].add(id)
+                        if not self.presuccessors.has_key(id_eachDoc):
+                            self.presuccessors[id_eachDoc] = set()
+                        self.presuccessors[id_eachDoc].add(id)
             doc = self.parser.nextDocument()
         fIndexInv.close()
         # pdb.set_trace()
@@ -147,7 +148,7 @@ class Index (object):
             return None
 
     def getSuccessors(self):
-        return self.successors
+        return self.successuers
 
     def getPresuccessors(self):
         return self.presuccessors
