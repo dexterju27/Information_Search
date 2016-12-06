@@ -21,6 +21,7 @@ import numpy as np
 from evaluation.GridSearch import *
 from models.RandomModel import *
 from collection.PageRank import *
+from collection.Hits import *
 
 
 index = Index("text")
@@ -99,6 +100,18 @@ def test7(irlists, index):
     eval = EvalIRModel(models, irlists, 10)
     scores_mean, scores_std = eval.evalModels()
     return scores_mean, scores_std
-test7(irlists, index)
+
+
+def test8(irlists, index):
+    weighter1 = WeighterVector1(index)
+    models = []
+    hits = Hits(100, index)
+    random_model = RandomModel(IRmodelVector(weighter1), hits, 10, 10, )
+    models.append(IRmodelVector(weighter1))
+    models.append(random_model)
+    eval = EvalIRModel(models, irlists, 10)
+    scores_mean, scores_std = eval.evalModels()
+    return scores_mean, scores_std
+scores, scores_std = test8(irlists, index)
 # the best parameters are 0.2475
 pdb.set_trace()
