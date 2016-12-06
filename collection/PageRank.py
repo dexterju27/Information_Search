@@ -1,3 +1,5 @@
+import pdb
+
 from collection.RandomWalker import *
 import numpy as np
 class PageRank(RandomWalker):
@@ -10,7 +12,7 @@ class PageRank(RandomWalker):
     def compute(self, successuers, predecesseurs):
         N = len(successuers)
         # vector
-        u = np.ones([1, N])
+        u = np.ones([N, 1])
         u = u * 1. / N
         A = np.zeros([N, N])
         mapping_element_to_index = dict()
@@ -26,7 +28,8 @@ class PageRank(RandomWalker):
                     continue
                 l = len(successuers[j_element])
                 A[i][j] = 1. / l
+        # pdb.set_trace()
         for i in range(self.max_iter):
-            u = (1. - self.d) / N * np.ones([1, N]) + self.d * A * u
+            u = (1. - self.d) / N * np.ones([N, 1]) + self.d * A.dot(u)
         return u
 

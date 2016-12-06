@@ -91,6 +91,7 @@ class Index (object):
             if id not in self.presuccessors:
                 self.presuccessors[id] = set()
             if doc.get('links') != '':
+                # pdb.set_trace()
                 for eachDoc in doc.get('links').split(";"):
                     # check if the id is valid
                     if eachDoc.isdigit():

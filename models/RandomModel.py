@@ -1,3 +1,5 @@
+import pdb
+
 from  models.IRmodel import *
 class RandomModel(IRmodel):
     def __init__(self, sub_model, random_walker, n, k):
@@ -12,24 +14,34 @@ class RandomModel(IRmodel):
 
     def getScores(self,query):
         # work with vector model
-        scores = self.sub_model.getScores(query, False)
+        # scores = self.sub_model.getScores(query, False)
+        ranking = self.sub_model.getRanking(query)
+
         #initial seeds
         seeds = set()
         count = 0
-        for each in scores.keys():
+        scores = dict()
+        for each in ranking:
             if count < self.n:
                 count += 1
-                seeds.add(each)
+                seeds.add(each[0])
 
         # add all the documents pointed by d
         v = set()
         for each in seeds:
             v.add(each)
-            v.union(self.successors[each])
+            if self.successors.has_key(each):
+                v.union(self.successors[each])
+            else:
+                self.successors[each] = set()
+                # charge the dict
             count = 0
-            for parent in self.presuccessors[each] :
-                if parent not in v and count < self.k:
-                    v.add(parent)
+            if self.presuccessors.has_key(each):
+                for parent in self.presuccessors[each] :
+                    if parent not in v and count < self.k:
+                        v.add(parent)
+            else:
+                self.presuccessors[each] = set()
         # regreante its successors and presuccessors
         v_successors = dict()
         v_presucessors = dict()
@@ -42,6 +54,7 @@ class RandomModel(IRmodel):
             if key not in seeds:
                 continue
             scores[key] = u[i]
+        # pdb.set_trace()
         return scores
 
     def getRanking(self, query):
