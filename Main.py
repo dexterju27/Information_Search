@@ -112,6 +112,6 @@ def test8(irlists, index):
     eval = EvalIRModel(models, irlists, 10)
     scores_mean, scores_std = eval.evalModels()
     return scores_mean, scores_std
-scores, scores_std = test8(irlists, index)
+scores, scores_std = test4(irlists, index)
 # the best parameters are 0.2475
 pdb.set_trace()

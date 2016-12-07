@@ -14,9 +14,11 @@ class GridSearch(object):
         self.models = models
         self.irlists = irlists
         self.nbLevel = nbLevel
+        self.scores_mean = []
+        self.scores_std = []
 
     def optimisation(self):
         eval = EvalIRModel(self.models, self.irlists,  self.nbLevel)
-        scores_mean, scores_std = eval.evalModels()
-        scores_mean = np.array(scores_mean)
+        self.scores_mean, self.scores_std = eval.evalModels()
+        scores_mean = np.array(self.scores_mean)
         return self.models[scores_mean.argmax()].getParams()

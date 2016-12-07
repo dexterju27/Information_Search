@@ -15,9 +15,7 @@ class Okapi(IRmodel):
         return
 
     def getParams(self):
-        print ("k1 is :" + self.k1)
-        print ("b is :" + self.b)
-        return
+        return self.b, self.k1
 
     def getLength(self, doc):
         words = self.weighter.getDocWeightsForDoc(doc)
