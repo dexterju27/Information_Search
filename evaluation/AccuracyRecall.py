@@ -54,15 +54,15 @@ class AccuracyRecall(EvalMeasure):
         nbLevels = self.nbLevels
         precision, recall, _ = self.CalPrecisionRecall(l)
         if precision == -1: #no pertinent doc in the corpus
-            return -1;
+            return None;
         #calculate the interpolate precisions
         k_levels = np.linspace(0, 1, nbLevels)
         precision_k = np.zeros(nbLevels)
 
         max_precision = 0
-        current_level = nbLevels - 1 # fill precision_k inversely
+        current_level = nbLevels - 1
         for i in range(len(recall)):
-            if recall[-i-1] < k_levels[current_level]: #inverse order to accelerate the max precision selection
+            if recall[-i-1] < k_levels[current_level]:
                 precision_k[current_level] = max_precision
                 current_level -= 1
                 if current_level == 0:
@@ -73,3 +73,48 @@ class AccuracyRecall(EvalMeasure):
         for i in range(current_level+1):
             precision_k[i] = max_precision
         return precision_k
+
+    def eval_1(self, l):
+        nbLevels = self.nbLevels
+        s = set()
+        number_correct = 0
+        scores = dict()
+        recall_array = []
+        precision_array = []
+        index = 0
+        if l.list == None:
+            return None
+        for each in l.query.relevants:
+            s.add(each[0])
+        number_all_doc = len(s)
+        for doc, score in l.list:
+            if index >= self.nbLevels:
+                break
+            if doc in s:
+                number_correct += 1
+            precision = number_correct * 1. / (index + 1.)
+            rappel = number_correct * 1. / number_all_doc * 1.
+            recall_array.append(rappel)
+            precision_array.append(precision)
+            index += 1
+        levels = np.linspace(0, 1, nbLevels)
+        precision =  np.zeros(nbLevels)
+
+        max_precision = 0
+        current_level = nbLevels - 1
+        for i in range(len(recall_array)):
+            if recall_array[-i-1] < levels[current_level]:
+                precision[current_level] = max_precision
+                current_level -= 1
+                if current_level == 0:
+                    max_precision = max(max(precision_array[:-i]), max_precision)
+                    precision[0] = max_precision
+                    return precision
+            max_precision = max(precision_array[-i-1], max_precision)
+        for i in range(current_level+1):
+            precision[i] = max_precision
+            return precision
+
+
+
+

@@ -32,6 +32,12 @@ class Hits(RandomWalker):
                 for child in successuers[key]:
                     j = mapping_element_to_index[child]
                     h_next[i] += a[j]
-                a = a_next / np.linalg.norm(a_next)
-                h = h_next / np.linalg.norm(h_next)
+                if np.linalg.norm(a_next) == 0:
+                    a = a_next
+                else:
+                    a = a_next / np.linalg.norm(a_next)
+                if np.linalg.norm(h_next) == 0:
+                    h = h_next
+                else:
+                    h = h_next / np.linalg.norm(h_next)
         return a

@@ -11,3 +11,5 @@ class Fearurelist:
         for each in self.features:
             features.append(each.getFeatures(idDoc, query))
         return features
+
+

@@ -1,5 +1,6 @@
 import math
 import operator
+import numpy as np
 
 class IRmodel:
     def getScores(self,query):
@@ -33,11 +34,8 @@ class IRmodelVector(IRmodel):
                     scores[each_doc] = docs[each_doc] * weight_stem
         if normalized:
             for k in scores.keys():
-                sum_x = 0.
-                xs  = self.weighter.getDocWeightsForDoc(k)
-                for x in xs.value():
-                    sum_x += x ** 2
-                scores[k] = scores[k] / math.sqrt(sum_x * sum_y)
+                xs  = self.weighter.getDocWeightsForDoc(k).values()
+                scores[k] = scores[k] / (np.linalg.norm(xs) * np.linalg.norm(query.values()))
         return scores
 
     def getRanking(self, query):

@@ -8,10 +8,8 @@
 #     text = stem.getTextRepresentation(doc.getText())
 #     # doc = parser.nextDocument()
 #     text.
-import pdb
-
 from Index import *
-from QueryParser import QueryParser
+from QueryParser import *
 from evaluation.EvalMeasure import *
 from models.IRmodel import  *
 from models.Weighter import  *
@@ -22,8 +20,14 @@ from evaluation.GridSearch import *
 from models.RandomModel import *
 from collection.PageRank import *
 from collection.Hits import *
-
-
+import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+from pylab import *
+from features.FeatureIRmodel import *
+from features.FeatureList import *
+from models.MetaModelLinear import *
 index = Index("text")
 index.indexation('cacm/cacm.txt', './test/')
 parser = QueryParser()
@@ -94,7 +98,7 @@ def test7(irlists, index):
     weighter1 = WeighterVector1(index)
     models = []
     page_rank = PageRank(0.1, 100, index)
-    random_model = RandomModel(IRmodelVector(weighter1), page_rank, 10, 10, )
+    random_model = RandomModel(IRmodelVector(weighter1), page_rank, 10, 10)
     models.append(IRmodelVector(weighter1))
     models.append(random_model)
     eval = EvalIRModel(models, irlists, 10)
@@ -112,6 +116,27 @@ def test8(irlists, index):
     eval = EvalIRModel(models, irlists, 10)
     scores_mean, scores_std = eval.evalModels()
     return scores_mean, scores_std
-scores, scores_std = test4(irlists, index)
+# scores, scores_std = test4(irlists, index)
 # the best parameters are 0.2475
+weighter1 = WeighterVector1(index)
+weighter2 = WeighterVector2(index)
+weighter3 = WeighterVector3(index)
+weighter4 = WeighterVector4(index)
+weighter5 = WeighterVector5(index)
+
+features = Fearurelist()
+features.addFeature(FeatureVectormodel(IRmodelVector(weighter1)))
+features.addFeature(FeatureVectormodel(IRmodelVector(weighter2)))
+features.addFeature(FeatureVectormodel(IRmodelVector(weighter3)))
+# features.addFeature(FeatureVectormodel(IRmodelVector(weighter4)))
+# features.addFeature(FeatureVectormodel(IRmodelVector(weighter5)))
+meta_model = MetaModelLinear(index, features, 0.001, 0.001, 20, 3)
+meta_model.trainModel(irlists)
+models = []
+models.append(meta_model)
+models.append(IRmodelVector(weighter1))
+models.append(IRmodelVector(weighter2))
+models.append(IRmodelVector(weighter3))
+eval = EvalIRModel(models, irlists, 20)
+scores_mean_m, scores_std_m = eval.evalModels()
 pdb.set_trace()
